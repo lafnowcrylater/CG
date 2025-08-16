@@ -58,6 +58,13 @@ public class Assignment1 extends JPanel implements Runnable{
                 scene1.coffinOffset += speed * elapsedTime;
                 scene1.bx += speed/240.0;
                 System.out.println(totalTime + " : "+ speed);
+            }else {
+                // Scene2 cloud
+                scene2.cloudX1 += scene2.cloudSpeed;
+                scene2.cloudX2 += scene2.cloudSpeed;
+
+                if (scene2.cloudX1 > 650) scene2.cloudX1 = -200;
+                if (scene2.cloudX2 > 650) scene2.cloudX2 = -200;
             }
             //System.out.printf("Frame time: %.3f s\n", elapsedTime);
 
