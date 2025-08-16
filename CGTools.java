@@ -1,7 +1,7 @@
-import java.util.LinkedList;
-import java.util.Queue;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class CGTools {
     static void midpointEllipse(Graphics g, int xc, int yc, int a, int b){
@@ -130,5 +130,23 @@ public class CGTools {
         }
 
         return m;
+    }
+    
+    static void drawLine(Graphics g, int x0, int y0, int x1, int y1) {
+        // Bresenham Line
+        int dx = Math.abs(x1 - x0);
+        int dy = Math.abs(y1 - y0);
+        int sx = (x0 < x1) ? 1 : -1;
+        int sy = (y0 < y1) ? 1 : -1;
+        int err = dx - dy;
+
+        while (true) {
+            g.fillRect(x0, y0, 1, 1);
+
+            if (x0 == x1 && y0 == y1) break;
+            int e2 = 2 * err;
+            if (e2 > -dy) { err -= dy; x0 += sx; }
+            if (e2 < dx) { err += dx; y0 += sy; }
+        }
     }
 }

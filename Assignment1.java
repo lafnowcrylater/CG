@@ -1,7 +1,7 @@
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class Assignment1 extends JPanel implements Runnable{
 
@@ -19,6 +19,13 @@ public class Assignment1 extends JPanel implements Runnable{
         final double duration = 1.5;
     }
     private final Scene1State scene1 = new Scene1State();
+
+    private static class Scene2State {
+        int cloudX1 = -200, cloudY1 = 150;
+        int cloudX2 = -300, cloudY2 = 100;
+        int cloudSpeed = 2; // px per frame
+    }
+    private final Scene2State scene2 = new Scene2State();
 
     public static void main(String[] args){
         Assignment1 m = new Assignment1();
@@ -67,7 +74,11 @@ public class Assignment1 extends JPanel implements Runnable{
     public void paintComponent(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
 
-        if(totalTime<=scene1.duration) scene1(g);
+        if(totalTime<=scene1.duration) {
+            scene1(g);
+        } else {
+            scene2(g);
+        }
     }
 
     private void scene1(Graphics g){
@@ -104,6 +115,45 @@ public class Assignment1 extends JPanel implements Runnable{
 
         buffer = CGTools.floodFillWithBoundary(buffer, 0, 0, Color.BLACK, Color.BLACK);
         g.drawImage(buffer, 0, 0, null);
+    }
+
+    private void scene2(Graphics g){
+        int width = 600;
+        int height = 600;
+
+        // Sky
+        g.setColor(new Color(135, 206, 235));
+        g.fillRect(0, 0, width, height);
+
+        // Grass blocks
+        g.setColor(new Color(76, 153, 0));
+        for (int i = 0; i < width; i += 40) {
+            for (int j = 400; j < height; j += 40) {
+                g.fillRect(i, j, 40, 40);
+            }
+        }
+
+        // Grass line
+        g.setColor(new Color(0, 102, 51));
+        CGTools.drawLine(g, 0, 400, 600, 400);
+
+        // Clouds
+        drawCloud(g, scene2.cloudX1, scene2.cloudY1, 40);
+        drawCloud(g, scene2.cloudX2, scene2.cloudY2, 30);
+
+    }
+
+    private void drawCloud(Graphics g, int x, int y, int blockSize) {
+        g.setColor(new Color(240, 240, 240));
+
+        // top
+        g.fillRect(x + blockSize, y - blockSize, blockSize, blockSize);
+        g.fillRect(x + 2*blockSize, y - blockSize, blockSize, blockSize);
+
+        // bttm
+        for (int i = 0; i < 4; i++) {
+            g.fillRect(x + i*blockSize, y, blockSize, blockSize);
+        }
     }
 
 }
