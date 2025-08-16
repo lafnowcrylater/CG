@@ -1,7 +1,7 @@
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class Assignment1 extends JPanel implements Runnable{
 
@@ -19,6 +19,13 @@ public class Assignment1 extends JPanel implements Runnable{
         final double duration = 1.5;
     }
     private final Scene1State scene1 = new Scene1State();
+
+     private static class Scene2State {
+        int cloudX1 = -200, cloudY1 = 150;
+        int cloudX2 = -300, cloudY2 = 100;
+        int cloudSpeed = 2; // px per frame
+    }
+    private final Scene2State scene2 = new Scene2State();
 
     public static void main(String[] args){
         Assignment1 m = new Assignment1();
@@ -53,6 +60,13 @@ public class Assignment1 extends JPanel implements Runnable{
                 System.out.println(totalTime + " : "+ speed);
             }
             //System.out.printf("Frame time: %.3f s\n", elapsedTime);
+            else{ // +cloud scene2
+                scene2.cloudX1 += scene2.cloudSpeed;
+                scene2.cloudX2 += scene2.cloudSpeed;
+                // cloud loop
+                if (scene2.cloudX1 > 650) scene2.cloudX1 = -200;
+                if (scene2.cloudX2 > 650) scene2.cloudX2 = -200;
+            }
 
             repaint();
 
@@ -67,7 +81,11 @@ public class Assignment1 extends JPanel implements Runnable{
     public void paintComponent(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
 
-        if(totalTime<=scene1.duration) scene1(g);
+        if(totalTime<=scene1.duration) {
+            scene1(g);
+        } else {
+            scene2(g);
+        }
     }
 
     private void scene1(Graphics g){
@@ -106,4 +124,87 @@ public class Assignment1 extends JPanel implements Runnable{
         g.drawImage(buffer, 0, 0, null);
     }
 
+    private void scene2(Graphics g){
+        int width = 600;
+        int height = 600;
+
+        // Sky
+        g.setColor(new Color(135, 206, 235));
+        g.fillRect(0, 0, width, height);
+
+        // Grass blocks
+        g.setColor(new Color(76, 153, 0));
+        for (int i = 0; i < width; i += 40) {
+            for (int j = 400; j < height; j += 40) {
+                g.fillRect(i, j, 40, 40);
+            }
+        }
+
+        // Grass line
+        g.setColor(new Color(0, 102, 51));
+        CGTools.drawLine(g, 0, 400, 600, 400);
+
+        // Trees
+        drawTree(g, 100, 410);
+        drawTree(g, 500, 410);
+
+        // Clouds
+        drawCloud(g, scene2.cloudX1, scene2.cloudY1, 40);
+        drawCloud(g, scene2.cloudX2, scene2.cloudY2, 30);
+
+        // Creeper (back)
+        drawCreeper1(g, width/2 - 40, 400 - 120, 20); 
+    }
+
+    private void drawCreeper1(Graphics g, int x, int y, int blockSize) {
+        g.setColor(new Color(0, 153, 0));
+
+        // Head 4x4
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                g.fillRect(x + i * blockSize, y + j * blockSize, blockSize, blockSize);
+            }
+        }
+
+        // body
+        for (int i = 1; i <= 2; i++) {
+            for (int j = 4; j < 8; j++) {
+                g.fillRect(x + i * blockSize, y + j * blockSize, blockSize, blockSize);
+            }
+        }
+
+        // Legs?
+        for (int i = 0; i < 4; i++) {
+            g.fillRect(x + i * blockSize, y + 8 * blockSize, blockSize, blockSize);
+            g.fillRect(x + i * blockSize, y + 9 * blockSize, blockSize, blockSize);
+        }
+    }
+
+    private void drawTree(Graphics g, int x, int y) {
+        // stem
+        g.setColor(new Color(102, 51, 0));
+        for (int j = 0; j < 3; j++) {
+            g.fillRect(x, y - j*20, 20, 20);
+        }
+        // leaves
+        g.setColor(new Color(34, 139, 34));
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                g.fillRect(x + i*20, y - 60 + j*20, 20, 20);
+            }
+        }
+    }
+
+    private void drawCloud(Graphics g, int x, int y, int blockSize) {
+        g.setColor(new Color(240, 240, 240));
+
+        // top
+        g.fillRect(x + blockSize, y - blockSize, blockSize, blockSize);
+        g.fillRect(x + 2*blockSize, y - blockSize, blockSize, blockSize);
+
+        // bttm
+        for (int i = 0; i < 4; i++) {
+            g.fillRect(x + i*blockSize, y, blockSize, blockSize);
+        }
+    }
 }
