@@ -24,8 +24,18 @@ public class Assignment1 extends JPanel implements Runnable{
         int cloudX1 = -200, cloudY1 = 150;
         int cloudX2 = -300, cloudY2 = 100;
         int cloudSpeed = 2; // px per frame
+
+        double timeInScene = 0; 
+        final double eggDuration = 2.0; // for creeper egg
+
+        // creeper exploding
+        boolean isFlashing = false;
+        double lastFlashTime = 0.0;
+        final double flashInterval = 0.3; // Flash every 0.2 seconds
+
     }
     private final Scene2State scene2 = new Scene2State();
+
 
     public static void main(String[] args){
         Assignment1 m = new Assignment1();
@@ -41,7 +51,7 @@ public class Assignment1 extends JPanel implements Runnable{
         new Thread(m).start();
     }
     
-    
+    @Override
     public void run() {
         double lastTime = System.nanoTime() / 1_000_000_000.0; // in seconds
 
@@ -59,12 +69,20 @@ public class Assignment1 extends JPanel implements Runnable{
                 scene1.bx += speed/240.0;
                 System.out.println(totalTime + " : "+ speed);
             }else {
+                scene2.timeInScene += elapsedTime;
+
                 // Scene2 cloud
                 scene2.cloudX1 += scene2.cloudSpeed;
                 scene2.cloudX2 += scene2.cloudSpeed;
 
                 if (scene2.cloudX1 > 650) scene2.cloudX1 = -200;
                 if (scene2.cloudX2 > 650) scene2.cloudX2 = -200;
+
+                // for flashing when exploding
+                if (scene2.timeInScene - scene2.lastFlashTime >= scene2.flashInterval) {
+                    scene2.isFlashing = !scene2.isFlashing; // Toggle the boolean value
+                    scene2.lastFlashTime = scene2.timeInScene;
+                }
             }
             //System.out.printf("Frame time: %.3f s\n", elapsedTime);
 
@@ -148,6 +166,21 @@ public class Assignment1 extends JPanel implements Runnable{
         drawCloud(g, scene2.cloudX1, scene2.cloudY1, 40);
         drawCloud(g, scene2.cloudX2, scene2.cloudY2, 30);
 
+        // Creeper's part
+        if (scene2.timeInScene < scene2.eggDuration) {
+            drawCreeperEgg(g); // for creeper egg
+        } else {
+            if (scene2.isFlashing) {
+                Creeper.drawCreeperFlashing(g);
+            } else {
+                Creeper.drawCreeperGreen(g);
+            }
+        }
+
+    }
+
+    private void drawCreeperEgg(Graphics g) {
+        
     }
 
     private void drawCloud(Graphics g, int x, int y, int blockSize) {
@@ -162,5 +195,6 @@ public class Assignment1 extends JPanel implements Runnable{
             g.fillRect(x + i*blockSize, y, blockSize, blockSize);
         }
     }
+
 
 }
