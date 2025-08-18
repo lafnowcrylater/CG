@@ -4,6 +4,25 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class CGTools {
+    static void midpointCircle(Graphics g, int xc, int yc, int r){
+        int x = 0;
+        int y = r;
+        int Dx = 2*x;
+        int Dy = 2*y;
+        int D = 1-r;
+
+        while(x<=y){
+            plot8Q(g, xc, yc, x, y);
+            x++;
+            Dx += 2;
+            D += Dx+1;
+            if(D>=0){
+                y--;
+                Dy -= 2;
+                D -= Dy;
+            }
+        }
+    }
     static void midpointEllipse(Graphics g, int xc, int yc, int a, int b){
         int a2 = a*a;
         int b2 = b*b;
@@ -53,6 +72,16 @@ public class CGTools {
         g.fillRect(xc - x, yc + y, 1, 1);
         g.fillRect(xc + x, yc - y, 1, 1);
         g.fillRect(xc - x, yc - y, 1, 1);
+    }
+    static void plot8Q(Graphics g, int xc, int yc, int x, int y) {
+        g.fillRect(xc + x, yc + y, 1, 1);
+        g.fillRect(xc - x, yc + y, 1, 1);
+        g.fillRect(xc + x, yc - y, 1, 1);
+        g.fillRect(xc - x, yc - y, 1, 1);
+        g.fillRect(xc + y, yc + x, 1, 1);
+        g.fillRect(xc - y, yc + x, 1, 1);
+        g.fillRect(xc + y, yc - x, 1, 1);
+        g.fillRect(xc - y, yc - x, 1, 1);
     }
 
     static BufferedImage floodFill(BufferedImage m, int x, int y, Color targetColor, Color replacementColor){
@@ -149,4 +178,13 @@ public class CGTools {
             if (e2 < dx) { err += dx; y0 += sy; }
         }
     }
+
+    static void drawBezierCurve(Graphics g, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4){
+        for(double t=0; t<1; t+=0.001){
+            double x = Math.pow((1-t), 3)*x1 + 3*t*Math.pow((1-t), 2)*x2 + 3*Math.pow(t,2)*(1-t)*x3 + Math.pow(t,3)*x4;
+            double y = Math.pow((1-t), 3)*y1 + 3*t*Math.pow((1-t), 2)*y2 + 3*Math.pow(t,2)*(1-t)*y3 + Math.pow(t,3)*y4;
+            g.fillRect((int)Math.round(x), (int)Math.round(y),1,1);
+        }
+    }
+    
 }
