@@ -201,6 +201,17 @@ public class Assignment1 extends JPanel implements Runnable{
         // g2.fillOval(400, 100, 140, 70);
         // g2.fillOval(450, 80, 120, 60);
 
+        // Birds
+        g2.setColor(Color.BLACK);
+        CGTools.drawBezierCurve(g2, 250, 150, 255, 135, 275, 135, 280, 150); // Left wing
+        CGTools.drawBezierCurve(g2, 280, 150, 285, 135, 305, 135, 310, 150); // Right wing
+
+        CGTools.drawBezierCurve(g2, 350, 180, 355, 165, 375, 165, 380, 180); // L
+        CGTools.drawBezierCurve(g2, 380, 180, 385, 165, 405, 165, 410, 180); // R
+
+        CGTools.drawBezierCurve(g2, 200, 200, 205, 185, 225, 185, 230, 200); // L
+        CGTools.drawBezierCurve(g2, 230, 200, 235, 185, 255, 185, 260, 200); //R
+        
         //Coffin
         g2.setColor(Color.BLACK);
         g2.translate(scene1.coffinOffset, 0);
