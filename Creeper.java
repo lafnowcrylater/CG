@@ -3,11 +3,11 @@ import java.awt.Graphics;
 
 public class Creeper {
     // size of each pixel
-    private static final int BLOCK_SIZE = 12;
+    protected static final int BLOCK_SIZE = 12;
 
     // make it center
-    private static final int HEAD_START_X = (600 - (8 * BLOCK_SIZE)) / 2;
-    private static final int HEAD_START_Y = (600 - (8 * BLOCK_SIZE)) / 2;
+    protected  static final int HEAD_START_X = (600 - (8 * BLOCK_SIZE)) / 2;
+    protected static final int HEAD_START_Y = (600 - (8 * BLOCK_SIZE)) / 2;
 
     // color pallete -- normal
     private static final Color DARK_GREEN = new Color(0, 102, 0);
@@ -33,9 +33,8 @@ public class Creeper {
         g.fillRect(x, y, BLOCK_SIZE, BLOCK_SIZE);
     }
 
-
     public static void drawCreeperGreen(Graphics g) {
-        //-------------HEAD------------
+        // ------------HEAD------------
         //1
         drawCreeperBlock(g, 0, 0, DARK_GREEN);
         drawCreeperBlock(g, 1, 0, DARK_GREEN);
@@ -116,7 +115,7 @@ public class Creeper {
         drawCreeperBlock(g, 6, 7, LIGHT_GREEN);
         drawCreeperBlock(g, 7, 7, DARK_GREEN);
 
-        //-------------BODY------------
+        //-------------BODY-----------
         //9
         drawCreeperBlock(g, 1, 8, MEDIUM_GREEN);
         drawCreeperBlock(g, 2, 8, DARK_GREEN);

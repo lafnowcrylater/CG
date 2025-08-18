@@ -7,7 +7,7 @@ public class Assignment1 extends JPanel implements Runnable{
 
     static final int FPS = 24;
     double currentTime, elapsedTime, totalTime = 0;
-
+    
     private static class Scene1State {
         int ax = 100, ay = 0;
         int bx = 120, by = 100;
@@ -21,21 +21,36 @@ public class Assignment1 extends JPanel implements Runnable{
     private final Scene1State scene1 = new Scene1State();
 
     private static class Scene2State {
-        int cloudX1 = -200, cloudY1 = 150;
-        int cloudX2 = -300, cloudY2 = 100;
+        // Cloud's part
+        int cloudX1 = -100, cloudY1 = 150;
+        int cloudX2 = -250, cloudY2 = 100;
         int cloudSpeed = 2; // px per frame
 
         double timeInScene = 0; 
         final double eggDuration = 2.0; // for creeper egg
 
-        // creeper exploding
+        final double flashDelay = 1.0; // let creeper freeze for 1 sec.
+
+        // Creeper flashing bf boom
         boolean isFlashing = false;
         double lastFlashTime = 0.0;
         final double flashInterval = 0.3; // Flash every 0.2 seconds
 
+        double flashStartTime = -1;
+        final double flashDuration = 2; // let it flash 2 sec
+
+        // Explosion state
+        boolean isExploding = false;
+        int explosionRadius = 0;
+
+        int creeperX = Creeper.HEAD_START_X + 4*Creeper.BLOCK_SIZE;
+        int creeperY = Creeper.HEAD_START_Y + 4*Creeper.BLOCK_SIZE;
+
+        // if explode = done
+        boolean scene2Finished = false; 
+
     }
     private final Scene2State scene2 = new Scene2State();
-
 
     public static void main(String[] args){
         Assignment1 m = new Assignment1();
@@ -78,10 +93,30 @@ public class Assignment1 extends JPanel implements Runnable{
                 if (scene2.cloudX1 > 650) scene2.cloudX1 = -200;
                 if (scene2.cloudX2 > 650) scene2.cloudX2 = -200;
 
-                // for flashing when exploding
-                if (scene2.timeInScene - scene2.lastFlashTime >= scene2.flashInterval) {
-                    scene2.isFlashing = !scene2.isFlashing; // Toggle the boolean value
+                // after egg n creeper are displayed then flash
+                if (scene2.timeInScene >= scene2.eggDuration + scene2.flashDelay && scene2.flashStartTime < 0) {
+                    scene2.flashStartTime = scene2.timeInScene;
                     scene2.lastFlashTime = scene2.timeInScene;
+                    scene2.isFlashing = true;
+                }
+
+                if (scene2.flashStartTime >= 0 && scene2.timeInScene - scene2.flashStartTime <= scene2.flashDuration) {
+                    if (scene2.timeInScene - scene2.lastFlashTime >= scene2.flashInterval) {
+                        scene2.isFlashing = !scene2.isFlashing;
+                        scene2.lastFlashTime = scene2.timeInScene;
+                    }
+                } else if (scene2.flashStartTime >= 0) {
+                    // let it flash for 2 sec and stop
+                    scene2.isFlashing = false;
+                    scene2.isExploding = true; // then exploding
+                }
+
+                if (scene2.isExploding) {
+                    scene2.explosionRadius += 30; // make rad bigger
+                    if (scene2.explosionRadius > 600) { 
+                        scene2.explosionRadius = 600;
+                        scene2.scene2Finished = true;
+                    }
                 }
             }
             //System.out.printf("Frame time: %.3f s\n", elapsedTime);
@@ -103,6 +138,34 @@ public class Assignment1 extends JPanel implements Runnable{
             scene1(g);
         } else {
             scene2(g);
+        }
+
+        if (scene2.isExploding) {
+            int bufSize = scene2.explosionRadius * 2 + 50;
+
+            BufferedImage buffer = new BufferedImage(bufSize, bufSize, BufferedImage.TYPE_INT_ARGB);
+            g2 = buffer.createGraphics();
+
+            g2.setColor(Color.BLACK);
+            CGTools.midpointEllipse(g2, bufSize/2, bufSize/2, scene2.explosionRadius, scene2.explosionRadius);
+
+            buffer = CGTools.floodFill(buffer, bufSize/2, bufSize/2, new Color(0,0,0,0), Color.BLACK);
+
+            g.drawImage(buffer, scene2.creeperX - bufSize/2, scene2.creeperY - bufSize/2, null);
+
+            scene2.explosionRadius += 10;
+            int maxRadius = Math.max(getWidth()*2, getHeight()*2);
+            if (scene2.explosionRadius >= maxRadius) {
+                scene2.scene2Finished = true;
+                scene2.isExploding = false;
+                return; 
+            }
+        }
+
+        if (scene2.scene2Finished) {
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, getWidth(), getHeight());
+            return;
         }
     }
 
@@ -168,7 +231,7 @@ public class Assignment1 extends JPanel implements Runnable{
 
         // Creeper's part
         if (scene2.timeInScene < scene2.eggDuration) {
-            drawCreeperEgg(g); // for creeper egg
+            CreeperEgg.drawEgg(g); // for creeper egg
         } else {
             if (scene2.isFlashing) {
                 Creeper.drawCreeperFlashing(g);
@@ -177,10 +240,6 @@ public class Assignment1 extends JPanel implements Runnable{
             }
         }
 
-    }
-
-    private void drawCreeperEgg(Graphics g) {
-        
     }
 
     private void drawCloud(Graphics g, int x, int y, int blockSize) {
