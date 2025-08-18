@@ -176,6 +176,14 @@ public class Assignment1 extends JPanel implements Runnable{
         g2.setColor(sky); // light sky blue
         g2.fillRect(0, 0, 600, 600);
 
+        //Sun
+        g2.setColor(Color.ORANGE);
+        CGTools.midpointCircle(g2, 360, 0, 100);
+        CGTools.floodFill(buffer, 360, 80, sky, Color.ORANGE);
+        CGTools.drawBezierCurve(g2, 280, 90, 270, 111, 260, 116, 240, 143);
+        CGTools.drawBezierCurve(g2, 538, 26, 567, 15, 578, 34, 608, 28);
+        CGTools.drawBezierCurve(g2, 273, 21, 257, 10, 246, 18, 230, 10);
+        
         //Clouds
         g2.setColor(Color.WHITE);
         CGTools.midpointEllipse(g2, 90,80,70,50);
@@ -183,10 +191,11 @@ public class Assignment1 extends JPanel implements Runnable{
         CGTools.midpointEllipse(g2, 140,60,90,60);
         CGTools.floodFill(buffer, 160, 60, sky, Color.WHITE);
         
-        CGTools.midpointEllipse(g2, 400,100,140,70);
-        CGTools.floodFill(buffer, 400, 100, sky, Color.WHITE);
-        CGTools.midpointEllipse(g2, 450,80,120,60);
-        CGTools.floodFill(buffer, 540, 80, sky, Color.WHITE);
+        CGTools.midpointEllipse(g2, 400,150,140,70);
+        CGTools.floodFillWithBoundary(buffer, 400, 150, Color.WHITE, Color.WHITE);
+        CGTools.midpointEllipse(g2, 450,120,120,60);
+        CGTools.floodFillWithBoundary(buffer, 540, 120, Color.WHITE, Color.WHITE);
+
         // g2.fillOval(80, 80, 100, 60);
         // g2.fillOval(130, 60, 120, 80);
         // g2.fillOval(400, 100, 140, 70);
