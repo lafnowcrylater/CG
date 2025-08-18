@@ -76,12 +76,11 @@ public class Assignment1 extends JPanel implements Runnable{
 
             totalTime += elapsedTime;
             double speed = scene1.initialSpeed / (1 + scene1.slowdownFactor * totalTime);
-            //System.out.printf("Sum: %.3f s\n", totalTime);
+            System.out.printf("Sum: %.3f s\n", totalTime);
 
             if(totalTime <= scene1.duration){
                 scene1.coffinOffset += speed * elapsedTime;
                 scene1.bx += speed/240.0;
-                System.out.println(totalTime + " : "+ speed);
             }else {
                 scene2.timeInScene += elapsedTime;
 
@@ -118,7 +117,6 @@ public class Assignment1 extends JPanel implements Runnable{
                     }
                 }
             }
-            //System.out.printf("Frame time: %.3f s\n", elapsedTime);
 
             repaint();
 
@@ -164,6 +162,7 @@ public class Assignment1 extends JPanel implements Runnable{
         if (scene2.scene2Finished) {
             g.setColor(Color.BLACK);
             g.fillRect(0, 0, getWidth(), getHeight());
+            System.exit(0);
             return;
         }
     }
@@ -196,11 +195,16 @@ public class Assignment1 extends JPanel implements Runnable{
         //Coffin
         g2.setColor(Color.BLACK);
         g2.translate(scene1.coffinOffset, 0);
-        g2.drawLine(scene1.ax, scene1.ay, scene1.bx, scene1.by);
-        g2.drawLine(scene1.bx, scene1.by, scene1.cx, scene1.cy);
+        // g2.drawLine(scene1.ax, scene1.ay, scene1.bx, scene1.by);
+        // g2.drawLine(scene1.bx, scene1.by, scene1.cx, scene1.cy);
+        CGTools.drawLineBresenham(g2,scene1.ax, scene1.ay, scene1.bx, scene1.by);
+        CGTools.drawLineBresenham(g2,scene1.bx, scene1.by, scene1.cx, scene1.cy);
+        buffer = CGTools.floodFillWithBoundary(buffer, 0, 0, Color.BLACK, Color.BLACK);
+        g2.setColor(Color.GRAY);
+        CGTools.drawLineBresenham(g2,scene1.ax-40, scene1.ay, scene1.bx-40, scene1.by);
+        CGTools.drawLineBresenham(g2,scene1.bx-40, scene1.by, scene1.cx-40, scene1.cy);
         g2.translate(-scene1.coffinOffset, 0);
 
-        buffer = CGTools.floodFillWithBoundary(buffer, 0, 0, Color.BLACK, Color.BLACK);
         g.drawImage(buffer, 0, 0, null);
     }
 
