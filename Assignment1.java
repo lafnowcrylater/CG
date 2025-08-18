@@ -48,7 +48,6 @@ public class Assignment1 extends JPanel implements Runnable{
 
         // if explode = done
         boolean scene2Finished = false; 
-
     }
     private final Scene2State scene2 = new Scene2State();
 
@@ -223,7 +222,7 @@ public class Assignment1 extends JPanel implements Runnable{
 
         // Grass line
         g.setColor(new Color(0, 102, 51));
-        CGTools.drawLine(g, 0, 400, 600, 400);
+        CGTools.drawLineBresenham(g, 0, 400, 600, 400);
 
         // Clouds
         drawCloud(g, scene2.cloudX1, scene2.cloudY1, 40);

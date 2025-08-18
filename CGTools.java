@@ -132,7 +132,7 @@ public class CGTools {
         return m;
     }
     
-    static void drawLine(Graphics g, int x0, int y0, int x1, int y1) {
+    static void drawLineBresenham(Graphics g, int x0, int y0, int x1, int y1) {
         // Bresenham Line
         int dx = Math.abs(x1 - x0);
         int dy = Math.abs(y1 - y0);
